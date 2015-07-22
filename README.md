@@ -1,5 +1,6 @@
 # tools/clipboard.lua - A Jumpcut Replacement
 
+
 Inspired by the Caffeine replacement example, I wrote a Jumpcut replacement.
 
 * It monitors the clipboard/pasteboard for changes, and stores the history of strings you copy to the transfer area.
@@ -11,3 +12,5 @@ Inspired by the Caffeine replacement example, I wrote a Jumpcut replacement.
 The code is a little bit crude, so I would appreciate suggestions on ways to improve it.
 
 I think the crash report functionality could leak your clipboard to the developers / third-parties, so be a little bit careful (disable reporting).
+
+## Import this by including ```require "tools/clipboard"```to your ```.hammerspoon/init.lua```file.
