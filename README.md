@@ -13,4 +13,4 @@ The code is a little bit crude, so I would appreciate suggestions on ways to imp
 
 I think the crash report functionality could leak your clipboard to the developers / third-parties, so be a little bit careful (disable reporting).
 
-## Import this by including ```require "tools/clipboard"```to your ```.hammerspoon/init.lua```file.
+Import this by including `require "tools/clipboard"` to your `.hammerspoon/init.lua` file.
