@@ -5,8 +5,7 @@ You can access this history on the menu (Unicode scissors icon).
 Clicking on any item will add it to your transfer area.
 If you open the menu while pressing option/alt, you will enter the Direct Paste Mode. This means that the selected item will be
 "typed" instead of copied to the active clipboard.
-
-Bug/TODO: History does not persists between sessions.
+The clipboard persists across launches 
 -> Ng irc suggestion     hs.settings.set("jumpCutReplacementHistory", clipboard_history)
 ]]--
 
