@@ -13,7 +13,7 @@ local jumpcut = hs.menubar.new()
 local frequency = 0.8 -- Speed in seconds to check for clipboard changes. If you check too frequently, you will loose performance, if you check sparsely you will loose copies
 local hist_size = 20 -- How many items to keep on history
 local label_length = 40 -- How wide the dropdown menu should be. Copies larger than this will have their label truncated and end with "…" (unicode for elipsis ...)
-local pasteOnSelect = false
+--local pasteOnSelect = false --not implemented yet
 
 local pasteboard = require("hs.pasteboard") -- http://www.hammerspoon.org/docs/hs.pasteboard.html
 local settings = require("hs.settings")
