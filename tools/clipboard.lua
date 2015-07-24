@@ -5,7 +5,7 @@ You can access this history on the menu (Unicode scissors icon).
 Clicking on any item will add it to your transfer area.
 If you open the menu while pressing option/alt, you will enter the Direct Paste Mode. This means that the selected item will be
 "typed" instead of copied to the active clipboard.
-The clipboard persists across launches
+The clipboard persists across launches.
 -> Ng irc suggestion: hs.settings.set("jumpCutReplacementHistory", clipboard_history)
 ]]--
 
@@ -29,9 +29,9 @@ local clipboard_history = settings.get("so.victor.hs.jumpcut") or {} --If no his
 -- Append a history counter to the menu
 function setTitle()
   if (#clipboard_history == 0) then
-    jumpcut:setTitle("✂")
+    jumpcut:setTitle("✂") -- Unicode magic
     else
-      jumpcut:setTitle("✂ ("..#clipboard_history..")") -- updates the menu counter"..) -- Unicode magic
+      jumpcut:setTitle("✂ ("..#clipboard_history..")") -- updates the menu counter
   end
 end
 
@@ -79,20 +79,20 @@ end
 
 -- Dynamic menu by cmsj https://github.com/Hammerspoon/hammerspoon/issues/61#issuecomment-64826257
 populateMenu = function(key)
+  setTitle() -- Update the counter every time the menu is refreshed
   menuData = {}
-  setTitle()
   if (#clipboard_history == 0) then
-    table.insert(menuData, {title="None", disabled = true})
+    table.insert(menuData, {title="None", disabled = true}) -- If the history is empty, display "None"
   else
     for k,v in pairs(clipboard_history) do
       if (string.len(v) > label_length) then
-        table.insert(menuData,1, {title=string.sub(v,0,label_length).."…", fn = function() putOnPaste(v,key) end })
+        table.insert(menuData,1, {title=string.sub(v,0,label_length).."…", fn = function() putOnPaste(v,key) end }) -- Truncate long strings
       else
         table.insert(menuData,1, {title=v, fn = function() putOnPaste(v,key) end })
       end -- end if else
     end-- end for
-  end--end if else
-  --footer
+  end-- end if else
+  -- footer
   table.insert(menuData, {title="-"})
   table.insert(menuData, {title="Clear All", fn = function() clearAll() end })
   if (key.alt == true or pasteOnSelect) then
@@ -100,9 +100,6 @@ populateMenu = function(key)
   end
   return menuData
 end
-
-setTitle() --Avoid wrong title if the user already have something on his saved history
-jumpcut:setMenu(populateMenu)
 
 -- If the pasteboard owner has changed, we add the current item to our history and update the counter.
 function storeCopy()
@@ -122,3 +119,6 @@ end
 --Checks for changes on the pasteboard. Is it possible to replace with eventtap?
 timer = hs.timer.new(frequency, storeCopy)
 timer:start()
+
+setTitle() --Avoid wrong title if the user already has something on his saved history
+jumpcut:setMenu(populateMenu)
