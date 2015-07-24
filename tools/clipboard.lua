@@ -6,7 +6,7 @@ Clicking on any item will add it to your transfer area.
 If you open the menu while pressing option/alt, you will enter the Direct Paste Mode. This means that the selected item will be
 "typed" instead of copied to the active clipboard.
 The clipboard persists across launches
--> Ng irc suggestion     hs.settings.set("jumpCutReplacementHistory", clipboard_history)
+-> Ng irc suggestion: hs.settings.set("jumpCutReplacementHistory", clipboard_history)
 ]]--
 
 -- Feel free to change those settings
@@ -26,12 +26,12 @@ local last_change = pasteboard.changeCount() -- displays how many times the past
 --Array to store the clipboard history
 local clipboard_history = settings.get("so.victor.hs.jumpcut") or {} --If no history is saved on the system, create an empty history
 
-
+-- Append a history counter to the menu
 function setTitle()
   if (#clipboard_history == 0) then
     jumpcut:setTitle("✂")
     else
-    jumpcut:setTitle("✂ ("..#clipboard_history..")") -- updates the menu counter"..) -- Unicode magic
+      jumpcut:setTitle("✂ ("..#clipboard_history..")") -- updates the menu counter"..) -- Unicode magic
   end
 end
 
@@ -68,12 +68,12 @@ function clearLastItem()
 end
 
 function pasteboardToClipboard(item)
-  while (#clipboard_history >= hist_size) do -- Enforce limit on qty of elements in history
+  -- Loop to enforce limit on qty of elements in history. Removes the oldest items
+  while (#clipboard_history >= hist_size) do
     table.remove(clipboard_history,1)
   end
-
   table.insert(clipboard_history, item)
-  settings.set("so.victor.hs.jumpcut",clipboard_history)
+  settings.set("so.victor.hs.jumpcut",clipboard_history) -- updates the saved history
   setTitle() -- updates the menu counter
 end
 
@@ -82,7 +82,6 @@ populateMenu = function(key)
   menuData = {}
   setTitle()
   if (#clipboard_history == 0) then
-
     table.insert(menuData, {title="None", disabled = true})
   else
     for k,v in pairs(clipboard_history) do
@@ -97,7 +96,7 @@ populateMenu = function(key)
   table.insert(menuData, {title="-"})
   table.insert(menuData, {title="Clear All", fn = function() clearAll() end })
   if (key.alt == true or pasteOnSelect) then
-    table.insert(menuData, {title="✍ Direct Paste Mode", disabled=true})
+    table.insert(menuData, {title="Direct Paste Mode ✍", disabled=true})
   end
   return menuData
 end
@@ -108,8 +107,9 @@ jumpcut:setMenu(populateMenu)
 -- If the pasteboard owner has changed, we add the current item to our history and update the counter.
 function storeCopy()
   now = pasteboard.changeCount()
-  if  (now > last_change) then
+  if (now > last_change) then
     current_clipboard = pasteboard.getContents()
+    -- asmagill requested this feature. It prevents the history from keeping items removed by password managers
     if (current_clipboard == nil and honor_clearcontent) then
       clearLastItem()
     else
@@ -119,43 +119,6 @@ function storeCopy()
   end
 end
 
---Checks for changes on the pasteboard. Is it possible to replace with eventtap ?
+--Checks for changes on the pasteboard. Is it possible to replace with eventtap?
 timer = hs.timer.new(frequency, storeCopy)
 timer:start()
-
---Debugging function (recursively print table elements)
---[[
-function print_r ( t )
-    local print_r_cache={}
-    local function sub_print_r(t,indent)
-        if (print_r_cache[tostring(t)]) then
-            print(indent.."*"..tostring(t))
-        else
-            print_r_cache[tostring(t)]=true
-            if (type(t)=="table") then
-                for pos,val in pairs(t) do
-                    if (type(val)=="table") then
-                        print(indent.."["..pos.."] => "..tostring(t).." {")
-                        sub_print_r(val,indent..string.rep(" ",string.len(pos)+8))
-                        print(indent..string.rep(" ",string.len(pos)+6).."}")
-                    elseif (type(val)=="string") then
-                        print(indent.."["..pos..'] => "'..val..'"')
-                    else
-                        print(indent.."["..pos.."] => "..tostring(val))
-                    end
-                end
-            else
-                print(indent..tostring(t))
-            end
-        end
-    end
-    if (type(t)=="table") then
-        print(tostring(t).." {")
-        sub_print_r(t,"  ")
-        print("}")
-    else
-        sub_print_r(t,"  ")
-    end
-    print()
-end
-]]--
